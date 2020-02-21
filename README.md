@@ -49,10 +49,11 @@ You've found the kitchen. You smell old food and some kind of animal.
  - (3) Add a "help" command that explains to type in the number of the room as well as how to quit.
  - You will need ``continue`` OR ``break`` statements!
 
-### "This place feels familiar..." (=6)
+### "This place feels familiar..." (=9)
 When you visit a place for the second time, print out a message indicating to the player that they have been to that place before. This will not carry over between games.
 - (3) Add a ``Set<String> visited`` onto the ``Player`` class.
-- (3) Update this flag from ``false`` to ``true`` within an appropriate method.
+- (3) Print a message when the player has returned to a place they have already ``visited`` from the InteractiveFiction loop.
+- (3) Update this behavior from ``false`` to ``true`` within an appropriate method.
 
 # Challenges:
 
