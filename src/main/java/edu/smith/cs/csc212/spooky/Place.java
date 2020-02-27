@@ -23,6 +23,19 @@ public class Place {
 	 */
 	private String description;
 	/**
+	 * Item in that place
+	 */
+	private String itemToCollect;
+	
+	/**
+	 * this method gets the item to collect in that place
+	 */
+	
+	public String getItem() {
+		return this.itemToCollect;
+	}
+	
+	/**
 	 * Whether reaching this place ends the game.
 	 */
 	private boolean terminal;
@@ -31,12 +44,14 @@ public class Place {
 	 * Internal only constructor for Place. Use {@link #create(String, String)} or {@link #terminal(String, String)} instead.
 	 * @param id - the internal id of this place.
 	 * @param description - the user-facing description of the place.
+	 * @param itemToCollect - what item is to be collected by the player in this place
 	 * @param terminal - whether this place ends the game.
 	 */
-	protected Place(String id, String description, boolean terminal) {
+	protected Place(String id, String description, String itemToCollect, boolean terminal) {
 		this.id = id;
 		this.description = description;
 		this.exits = new ArrayList<>();
+		this.itemToCollect = itemToCollect;
 		this.terminal = terminal;
 	}
 	
@@ -48,6 +63,17 @@ public class Place {
 		this.exits.add(exit);
 	}
 	
+	/**
+	 * Searches the place for any secret Exits and makes them not secret
+	 * @param exit - the description and target of the other Place.
+	 */
+	public void search() {
+		for (Exit exit : this.exits) {
+			exit.search();
+		}
+	}
+	
+
 	/**
 	 * For gameplay, whether this place ends the game.
 	 * @return true if this is the end.
@@ -92,8 +118,8 @@ public class Place {
 	 * @param description - this is the description of the place.
 	 * @return the Place object.
 	 */
-	public static Place terminal(String id, String description) {
-		return new Place(id, description, true);
+	public static Place terminal(String id, String description, String itemToCollect) {
+		return new Place(id, description, itemToCollect, true);
 	}
 	
 	/**
@@ -102,8 +128,8 @@ public class Place {
 	 * @param description - this is what we show to the user.
 	 * @return the new Place object (add exits to it).
 	 */
-	public static Place create(String id, String description) {
-		return new Place(id, description, false);
+	public static Place create(String id, String description, String itemToCollect) {
+		return new Place(id, description, itemToCollect, false);
 	}
 	
 	/**

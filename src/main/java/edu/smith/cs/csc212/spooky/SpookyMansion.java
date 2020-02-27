@@ -23,114 +23,82 @@ public class SpookyMansion implements GameWorld {
 	 * This constructor builds our SpookyMansion game.
 	 */
 	public SpookyMansion() {
-		Place entranceHall = insert(
-				Place.create("entranceHall", "You are in the grand entrance hall of a large building.\n"
-						+ "The front door is locked. How did you get here?"));
-		entranceHall.addExit(new Exit("basement", "There are stairs leading down."));
-		entranceHall.addExit(new Exit("attic", "There are stairs leading up."));
-		entranceHall.addExit(new Exit("kitchen", "There is a red door."));
-		entranceHall.addExit(new Exit("closet", "There is a brown door."));
-
-		String EMOJI_SKULL = "\uD83D\uDC80";
-		Place closet = insert(Place.create("closet", "On the wall is scratched a series of letters and a skull icon ("+EMOJI_SKULL+").\n"
-				+ "North.. North.. East.. South.\n" 
-				+ "What could it mean?"));
-		closet.addExit(new Exit("entranceHall", "Go back."));
-
-		Place basement = insert(
-				Place.create("basement", "You have found the basement of the mansion.\n" + "It is darker down here.\n"
-						+ "You get the sense a secret is nearby, but you only see the stairs you came from."));
-		basement.addExit(new Exit("entranceHall", "There are stairs leading up."));
-		basement.addExit(new Exit("fallingPit", "There appears to be a pit in the center of the room you could climb into..."));
 		
-		Place fallingPit = insert(
-				Place.create("fallingPit", "I don't know what you were thinking..."));
-		fallingPit.addExit(new Exit("labyrinth0", "Keep falling."));
-
-		Place attic = insert(Place.create("attic",
-				"Something rustles in the rafters as you enter the attic. Creepy.\n" + "It's big up here."));
-		attic.addExit(new Exit("entranceHall", "There are stairs leading down."));
-		attic.addExit(new Exit("attic2", "There is more through an archway."));
-
-		Place attic2 = insert(Place.create("attic2", "There's definitely a bat in here somewhere.\n"
-				+ "This part of the attic is brighter, so maybe you're safe here."));
-		attic2.addExit(new Exit("attic", "There is more back through the archway."));
-		attic2.addExit(new Exit("balcony", "There is a balcony."));
-		attic2.addExit(new Exit("dumbwaiter", "There is a dumbwaiter."));
-
+		Place entranceHall = insert (Place.create("entranceHall", "You are in the grand entrance of a haunted mansion. \n"
+				+ "The front door is locked and you are hungry, you must collect the 5 donuts from around the house.", null));
+		entranceHall.addExit(new Exit("upstairs","Walk up the staircase."));
+		entranceHall.addExit(new Exit("leftSittingRoom","Walk through the left doorway."));
+		entranceHall.addExit(new Exit("library","Walk straight towards the library."));
+		entranceHall.addExit(new Exit("fireplaceRoom","Walk through the right doorway."));
 		
-		Place balcony = insert(Place.create("balcony", "The night is pitch-black."));
-		balcony.addExit(new Exit("attic2", "Return to the attic."));
-		balcony.addExit(new Exit("jump", "You could jump off, but you can't see the ground."));
-
-		Place jump = insert(Place.terminal("jump", "I wonder what you expected to happen here."));
 		
-		Place kitchen = insert(
-				Place.create("kitchen", "You've found the kitchen. You smell old food and some kind of animal."));
-		kitchen.addExit(new Exit("entranceHall", "There is a red door."));
-		kitchen.addExit(new Exit("dumbwaiter", "There is a dumbwaiter."));
-
-		Place dumbwaiter = insert(Place.create("dumbwaiter", "You crawl into the dumbwaiter. What are you doing?"));
-		dumbwaiter.addExit(new Exit("secretRoom", "Take it to the bottom."));
-		dumbwaiter.addExit(new Exit("kitchen", "Take it to the middle-level."));
-		dumbwaiter.addExit(new Exit("attic2", "Take it up to the top."));
-
-		Place secretRoom = insert(Place.create("secretRoom", "You have found the secret room."));
-		secretRoom.addExit(new Exit("labyrinth0", "There is door with a skull on it... "+EMOJI_SKULL));
-		secretRoom.addExit(new Exit("hallway0", "There is a long hallway."));
-
-		int hallwayDepth = 3;
-		int lastHallwayPart = hallwayDepth - 1;
-		for (int i = 0; i < hallwayDepth; i++) {
-			Place hallwayPart = insert(Place.create("hallway" + i, "This is a very long hallway."));
-			if (i == 0) {
-				hallwayPart.addExit(new Exit("secretRoom", "Go back."));
-			} else {
-				hallwayPart.addExit(new Exit("hallway" + (i - 1), "Go back."));
-			}
-			if (i != lastHallwayPart) {
-				hallwayPart.addExit(new Exit("hallway" + (i + 1), "Go forward."));
-			} else {
-				hallwayPart.addExit(new Exit("crypt", "There is darkness ahead."));
-			}
-		}
-
-		Place crypt = insert(Place.terminal("crypt", "You have found the crypt.\n"
-				+ "It is scary here, but there is an exit to outside.\n" + "Maybe you'll be safe out there."));
-
-		String labyrinthDescription = "You see four hallways stretching out into the mist.\n"
-				+ "On the ground, there is tile shaped like a compass.";
-		Place labyrinth0 = insert(Place.create("labyrinth0", labyrinthDescription));
-		Place labyrinth1 = insert(Place.create("labyrinth1", labyrinthDescription));
-		Place labyrinth2 = insert(Place.create("labyrinth2", labyrinthDescription));
-		Place labyrinth3 = insert(Place.create("labyrinth3", labyrinthDescription));
+	// EVERYTHING UPSTAIRS
+		Place upstairs = insert (Place.create("upstairs", "You are at the top of the stairs.", null));
+		upstairs.addExit(new Exit("entranceHall","Go back down the stairs."));
+		upstairs.addExit(new Exit("upstairsLeftBedroom","There is an open doorway to your left."));
+		upstairs.addExit(new Exit("upstairsRightBedroom","There is an open doorway to your right."));
+		//locked exits
+		upstairs.addExit(new lockedExit("blueDoor","There is a blue doorway ahead of you.","blue key"));
+		upstairs.addExit(new lockedExit("attic","There are stairs leading up to the attic, but it is extremely dark.","flashlight"));
 		
-		// solution: North.
-		labyrinth0.addExit(new Exit("labyrinth1", "Go North."));
-		labyrinth0.addExit(new Exit("labyrinth0", "Go East."));
-		labyrinth0.addExit(new Exit("labyrinth0", "Go South."));
-		labyrinth0.addExit(new Exit("labyrinth0", "Go West."));
+		Place upstairsLeftBedroom = insert (Place.create("upstairsLeftBedroom", "You enter a small bedroom. \n"
+				+ "There is a bed and dresser. What's under the pillow?", "blue key"));
+		upstairsLeftBedroom.addExit(new Exit("upstairs","Go back."));
 		
-		// solution: North.
-		labyrinth1.addExit(new Exit("labyrinth2", "Go North."));
-		labyrinth1.addExit(new Exit("labyrinth0", "Go East."));
-		labyrinth1.addExit(new Exit("labyrinth0", "Go South."));
-		labyrinth1.addExit(new Exit("labyrinth0", "Go West."));
 		
-		// solution: East.
-		labyrinth2.addExit(new Exit("labyrinth0", "Go North."));
-		labyrinth2.addExit(new Exit("labyrinth3", "Go East."));
-		labyrinth2.addExit(new Exit("labyrinth0", "Go South."));
-		labyrinth2.addExit(new Exit("labyrinth0", "Go West."));
+		Place upstairsRightBedroom = insert (Place.create("upstairsRightBedroom", "You just entered a room with lots of furniture covered with white sheets.\n"
+				+ "Is there anything under the sheets other than furniture?.", "donut 1"));
+		upstairsRightBedroom.addExit(new Exit("upstairs","Go back."));
 		
-		// solution: South.
-		labyrinth3.addExit(new Exit("labyrinth0", "Go North."));
-		labyrinth3.addExit(new Exit("labyrinth3", "Go East."));
-		labyrinth3.addExit(new Exit("entranceHall", "Go South."));	
-		labyrinth3.addExit(new Exit("labyrinth0", "Go West."));
+		Place blueDoor = insert (Place.create("blueDoor", "You walk into a large bedroom. \n"
+				+ "Is there anything under this pillow?","flashlight"));
+		blueDoor.addExit(new Exit("upstairs","Go back."));
+		blueDoor.addExit(new Exit("dresserRoom","That dresser over there looks a little loose."));
+	
+		Place dresserRoom = insert (Place.create("dresserRoom", "You walk into the secret room behind the dresser. \n" 
+		+"On the floor, you see a bag of donuts!", "donut 2"));
+		dresserRoom.addExit(new Exit("blueDoor","Go back"));
+//		
+		Place attic = insert(Place.create("attic", "You walk up the stairs and it is dark and creepy. There are bats on the ceiling. What's that in the corner?", "donut 3"));
+		attic.addExit(new Exit("upstairs","Go back down."));
 		
+		//EVERYTHING GROUND LEVEL
+		Place leftSittingRoom = insert(Place.create("leftSittingRoom", "You walk into an old sitting room. What's that under the couch?", "green key"));
+		leftSittingRoom.addExit(new Exit("entranceHall","Go back."));
+//		
+		Place library = insert(Place.create("library", "You walk into a library", null));
+		library.addExit(new Exit("entranceHall","Go back."));
+		library.addExit(new Exit("diningRoom","There's a dining room ahead."));
+		library.addExit(new Exit("dungeon","There's a strange bookcase, perhaps you can push it aside?"));
+		
+		Place diningRoom = insert(Place.create("diningRoom", "This looks like it hasn't been cleaned in years. Is there anything under the platter?", null));
+		diningRoom.addExit(new Exit("library","Go back to the library."));
+		diningRoom.addExit(new Exit("kitchen","Go into the kitchen."));
 
-
+		Place kitchen = insert(Place.create("kitchen", "Ew. Let's check the fridge.", "muffin"));
+		kitchen.addExit(new Exit("diningRoom","Go back to the dining room."));
+		
+		Place fireplaceRoom = insert(Place.create("fireplaceRoom", "This looks cozy... the fire is bright", null));
+		//locked exit
+		fireplaceRoom.addExit(new lockedExit("greenDoor", "What's behind the green door?","green key"));
+		//secret exit that only appears at the very end
+		fireplaceRoom.addExit(new secretExit("outside", "The fire is out! Try crawling through the fireplace..."));
+		fireplaceRoom.addExit(new Exit ("entranceHall", "Go back to the entrance hall."));
+		
+		Place outside = insert(Place.terminal("outside", "You made it outside!",null));
+		
+		Place greenDoor = insert(Place.create("greenDoor", "This is a music room, so many instruments! Could something be behind the piano?", "donut 4"));
+		greenDoor.addExit(new Exit("fireplaceRoom","Go back to the fireplace room."));
+		
+		//EVERYTHING BELOW GROUND
+		Place dungeon = insert(Place.create("dungeon", "You walk into a creepy dungeon, there's a man in the cell." +
+		"Hint: his name is muffin man, and he loves muffins", null));
+		dungeon.addExit(new Exit("library","Go back."));
+		//locked exit, the man will only talk to you when you have a muffin
+		dungeon.addExit(new lockedExit("muffinMan","Talk to the man when he isn't hungry.","muffin"));
+		
+		Place muffinMan = insert(Place.create("muffinMan", "The man tells you to search in the fireplace once you've collected what you came for.", null));
+		muffinMan.addExit(new Exit("dungeon","Go back."));
 
 		// Make sure your graph makes sense!
 		checkAllExitsGoSomewhere();

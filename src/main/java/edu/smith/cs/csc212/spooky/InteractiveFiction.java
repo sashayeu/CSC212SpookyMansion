@@ -21,6 +21,13 @@ public class InteractiveFiction {
 	static String runGame(TextInput input, GameWorld game) {
 		// This is the current location of the player (initialize as start).
 		Player player = new Player(game.getStart());
+		boolean visitedBefore = false;
+		GameTime time = new GameTime();
+		
+		System.out.println("Welcome to my game! Your goal is to collect all of the donuts and leave this haunted house.\n"
+				+ "Type 'take' to pick up items and the number of the action you want to perform. Good luck!\n"
+				+ "This game was inspired by Garfield's Scary Scavenger Hunt found at\n"
+				+ " http://www.friv.com/z/flashx/scaryscavengerhunt/game.html?Other-x-x-www-xx");
 
 		// Play the game until quitting.
 		// This is too hard to express here, so we just use an infinite loop with breaks.
@@ -31,7 +38,16 @@ public class InteractiveFiction {
 			System.out.println();
 			System.out.println("... --- ...");
 			System.out.println(here.getDescription());
-
+			
+			//this is responsible for tracking where the player has been before 
+			visitedBefore = player.visited.contains(player.getPlace());
+			player.getVisited().add(player.getPlace());
+			
+			//prints if the player has already visited this place
+			if (visitedBefore == true) {
+				System.out.println("You've been here before!");
+			}
+				
 			// Game over after print!
 			if (here.isTerminalState()) {
 				break;
@@ -56,7 +72,7 @@ public class InteractiveFiction {
 			// Do not uppercase action -- I have lowercased it.
 			String action = words.get(0).toLowerCase().trim();
 
-			if (action.equals("quit")) {
+			if (action.equals("quit")|| action.equals("q") || action.equals("escape")) {
 				if (input.confirm("Are you sure you want to quit?")) {
 					// quit!
 					break;
@@ -65,7 +81,51 @@ public class InteractiveFiction {
 					continue;
 				}
 			}
+			
+			//help command explaining room number and how to quit
+			if (action.equals("help")) {
+				System.out.println("Type q, quit, or escape to quit. \nType the number of the choices below to proceed with the choice.");
+				continue;
+			}
 
+			//this command searches for a secret exit in a place, making the exit visible
+			//since the only secret exit is the final one, it first makes sure the player has gathered all the food necessary
+			if (action.equals("search")) {
+				if (player.items.contains("donut 1") && player.items.contains("donut 2")
+						&&player.items.contains("donut 3") && player.items.contains("donut 4")
+						&& player.items.contains("muffin")) {
+					here.search();
+				}
+				continue;
+			}
+			
+			//"stuff" prints out what items the player has
+			if (action.equals("stuff")) {
+				if (player.items.size() == 0) {
+					System.out.println("You have nothing yet!");
+				} else {
+					System.out.println("Here are your items:");
+					System.out.println(player.items);
+				}
+				continue;
+				
+			}
+			
+			//"rest" advances the time by 2 hours
+			if (action.equals("rest")) {
+				time.increaseHour();
+				time.increaseHour();
+				
+			}
+			
+			//"take" collects the items in the room and adds them to the list 
+			if (action.equals("take")) {
+				if (here.getItem() != null) {
+					player.items.add(here.getItem());
+				}
+				continue;
+			}
+			
 			// From here on out, what they typed better be a number!
 			Integer exitNum = null;
 			try {
@@ -79,14 +139,18 @@ public class InteractiveFiction {
 				System.out.println("I don't know what to do with that number!");
 				continue;
 			}
+			
 
 			// Move to the room they indicated.
 			Exit destination = exits.get(exitNum);
 			if (destination.canOpen(player)) {
 				player.moveTo(destination.getTarget());
+				time.increaseHour();
+				
 			} else {
-				// TODO: some kind of message about it being locked?
+				System.out.println("Sorry, this appears to be locked.");
 			}
+			
 		}
 
 		return player.getPlace();
